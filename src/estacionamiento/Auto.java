@@ -1,14 +1,13 @@
 package estacionamiento;
 
 public class Auto extends Vehiculo {
-    private double largo;
+    private double largo; // En metros
 
-    public Auto(String matricula, String marca, String modelo, String color, double largo) {
-        super(matricula, marca, modelo, color);
+    public Auto(String patente, double largo) {
+        super(patente);
         this.largo = largo;
     }
 
-    // Getter y Setter para largo
     public double getLargo() {
         return largo;
     }
