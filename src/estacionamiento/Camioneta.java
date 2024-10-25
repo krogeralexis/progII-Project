@@ -8,7 +8,7 @@ public class Camioneta extends Vehiculo {
         this.tipoCamioneta = tipoCamioneta;
     }
 
-    // Getter y Setter para tipoCamioneta
+    // Getter tipoCamioneta
     public String getTipoCamioneta() {
         return tipoCamioneta;
     }

@@ -1,14 +1,15 @@
 package estacionamiento;
 
 public class Moto extends Vehiculo {
-    private double cilindrada; // En cm³
+    private int cilindrada;
 
-    public Moto(String patente, double cilindrada) {
-        super(patente);
+    public Moto(String matricula, String marca, String modelo, String color, int cilindrada) {
+        super(matricula, marca, modelo, color);
         this.cilindrada = cilindrada;
     }
 
-    public double getCilindrada() {
+    // Getter y Setter para cilindrada
+    public int getCilindrada() {
         return cilindrada;
     }
 }
