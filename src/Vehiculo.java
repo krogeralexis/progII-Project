@@ -8,20 +8,28 @@ public class Vehiculo {
     private String modelo;
     private String color;
     private String observaciones;
+    private String tipoVehiculo;
     private LocalDateTime horaEntrada;
     private LocalDateTime horaSalida;
 
 
-    public Vehiculo(String matricula, String marca, String modelo, String color, String observaciones, LocalDateTime horaEntrada, LocalDateTime horaSalida) {
+    public Vehiculo(String matricula, String marca,String tipoVehiculo, String modelo, String color, String observaciones, LocalDateTime horaEntrada, LocalDateTime horaSalida) {
         this.matricula = matricula;
         this.marca = marca;
+        this.tipoVehiculo = tipoVehiculo;
         this.modelo = modelo;
         this.color = color;
         this.observaciones = observaciones;
         this.horaEntrada = horaEntrada;
         this.horaSalida = horaSalida;
     }
-    // Getters y setters
+    public String getTipoVehiculo() {
+		return tipoVehiculo;
+	}
+	public void setTipoVehiculo(String tipoVehiculo) {
+		this.tipoVehiculo = tipoVehiculo;
+	}
+	// Getters y setters
 	public String getMatricula() {
 		return matricula;
 	}

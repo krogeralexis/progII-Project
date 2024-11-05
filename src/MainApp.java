@@ -30,7 +30,10 @@ public class MainApp {
 
     private static void registrarVehiculo() {
         System.out.println("\nIngrese los datos del vehículo:");
-
+        
+        System.out.print("Tipo: ");
+        String tipoVehiculo = scanner.nextLine();
+        
         System.out.print("Matrícula: ");
         String matricula = scanner.nextLine();
 
@@ -53,7 +56,7 @@ public class MainApp {
         LocalDateTime horaSalida = null;
 
         // Crear el objeto Vehiculo con los datos ingresados
-        Vehiculo vehiculo = new Vehiculo(matricula, marca, modelo, color, observaciones, horaEntrada, horaSalida);
+        Vehiculo vehiculo = new Vehiculo(tipoVehiculo.toLowerCase(), matricula.toUpperCase(), marca, modelo, color, observaciones, horaEntrada, horaSalida);
 
         // Intentar registrar el vehículo en la base de datos
         vehiculoDAO.registrarVehiculo(vehiculo);

@@ -5,14 +5,13 @@ import java.sql.Timestamp;
 
 public class VehiculoDAO {
 	public void registrarVehiculo(Vehiculo vehiculo) {
-	    String sql = "INSERT INTO vehiculos (matricula, marca, modelo, color, observaciones, hora_entrada, hora_salida) "
-	               + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+	    String sql = "INSERT INTO vehiculos (matricula, marca, modelo, color, observaciones, hora_entrada, hora_salida, tipo) "
+	               + "VALUES (?, ?, ?, ?, ?, ?, ? ,?)";
 
 	    try (Connection conn = DatabaseConnection.getConnection();
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        
-	        pstmt.setString(1, vehiculo.getMatricula());
-	        pstmt.setString(2, vehiculo.getMarca());
+	        pstmt.setString(1, vehiculo.getMarca());
+	        pstmt.setString(2, vehiculo.getTipoVehiculo());
 	        pstmt.setString(3, vehiculo.getModelo());
 	        pstmt.setString(4, vehiculo.getColor());
 	        if (vehiculo.getObservaciones() == null) {
@@ -28,7 +27,8 @@ public class VehiculoDAO {
 	        } else {
 	            pstmt.setNull(7, java.sql.Types.TIMESTAMP);
 	        }
-
+	        pstmt.setString(8, vehiculo.getMatricula());
+	        	
 	        pstmt.executeUpdate();
 	        System.out.println("Vehículo registrado correctamente en la base de datos.");
 
