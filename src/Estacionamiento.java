@@ -14,7 +14,7 @@ public class Estacionamiento extends Vehiculo{
 
     // Métodos para asignar y liberar lugar
     public LugarEstacionamiento asignarLugar(String tipoVehiculo) {
-        
+        String sql ="INSERT INTO";
     	
     }
 

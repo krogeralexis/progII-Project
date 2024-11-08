@@ -12,12 +12,7 @@ public class VehiculoDAO {
                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
-            if (esLugarOcupado(conn, vehiculo.getTipoVehiculo(), vehiculo.getLugarId())) {
-                System.out.println("El lugar está ocupado. No se puede registrar el vehículo.");
-                return;
-            }
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {            
 
             pstmt.setString(1, vehiculo.getMatricula());
             pstmt.setString(2, vehiculo.getMarca());
@@ -42,31 +37,5 @@ public class VehiculoDAO {
             System.out.println("Error al registrar el vehículo en la base de datos.");
         }
     }
-    
-    public int obtenerIdLugarLibre(String tipoVehiculo) {
-        String sql = "SELECT id FROM lugares WHERE tipoVehiculo = ? AND ocupado = 0 LIMIT 1";
-        int lugarId = -1; // Valor predeterminado en caso de que no se encuentre un lugar libre
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, tipoVehiculo); // Establece el tipo de vehículo en la consulta
-
-            try (ResultSet rs = pstmt.executeQuery()) { // Ejecuta la consulta y obtiene el resultado
-                if (rs.next()) {
-                    lugarId = rs.getInt("id"); // Obtiene el valor de la columna "id"
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al obtener el ID del lugar libre.");
-        }
-
-        return lugarId; // Devuelve el ID encontrado o -1 si no se encontró un lugar libre
-    }
-
-     
-    
-    
-    
+        
 }

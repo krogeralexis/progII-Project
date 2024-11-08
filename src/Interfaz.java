@@ -8,12 +8,21 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JList;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 public class Interfaz extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	private String[] opciones = {"Moto", "Auto", "Camioneta"};
+	private JTextField lblObservaciones;
+	private JTextField lblColor;
+	private JTextField lblModelo;
+	private JTextField lblMarca;
+	private JTextField lblMatricula;
 	/**
 	 * Launch the application.
 	 */
@@ -77,9 +86,39 @@ public class Interfaz extends JFrame {
 		lblNewLabel_1_2.setBounds(36, 137, 46, 14);
 		panel_2.add(lblNewLabel_1_2);
 		
-		JList list = new JList();
-		list.setBounds(408, 52, 116, 25);
-		panel_2.add(list);
+		JComboBox<String> comboBox = new JComboBox<>(opciones);
+		comboBox.setSelectedIndex(-1);
+		comboBox.setBounds(134, 182, 117, 22);
+		panel_2.add(comboBox);
+		
+		JLabel lblNewLabel_1_1_2_1 = new JLabel("Tipo");
+		lblNewLabel_1_1_2_1.setBounds(36, 186, 78, 14);
+		panel_2.add(lblNewLabel_1_1_2_1);
+		
+		lblObservaciones = new JTextField();
+		lblObservaciones.setBounds(134, 158, 86, 20);
+		panel_2.add(lblObservaciones);
+		lblObservaciones.setColumns(10);
+		
+		lblColor = new JTextField();
+		lblColor.setBounds(134, 134, 86, 20);
+		panel_2.add(lblColor);
+		lblColor.setColumns(10);
+		
+		lblModelo = new JTextField();
+		lblModelo.setBounds(134, 109, 86, 20);
+		panel_2.add(lblModelo);
+		lblModelo.setColumns(10);
+		
+		lblMarca = new JTextField();
+		lblMarca.setBounds(134, 84, 86, 20);
+		panel_2.add(lblMarca);
+		lblMarca.setColumns(10);
+		
+		lblMatricula = new JTextField();
+		lblMatricula.setBounds(134, 60, 86, 20);
+		panel_2.add(lblMatricula);
+		lblMatricula.setColumns(10);
 		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Salida", null, panel, null);
