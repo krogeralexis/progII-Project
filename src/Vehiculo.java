@@ -9,6 +9,7 @@ public class Vehiculo {
     private String color;
     private String observaciones;
     private String tipoVehiculo;
+    private String lugar;
     private LocalDateTime horaEntrada;
     private LocalDateTime horaSalida;
 
@@ -32,6 +33,12 @@ public class Vehiculo {
 	// Getters y setters
 	public String getMatricula() {
 		return matricula;
+	}
+	public String getLugar() {
+		return lugar;
+	}
+	public String setLugar(String lugar) {
+		return this.lugar = lugar;
 	}
 	public void setMatricula(String matricula) {
 		this.matricula = matricula;
