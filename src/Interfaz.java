@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.awt.event.ActionEvent;
+import com.toedter.calendar.JDateChooser;
 
 public class Interfaz extends JFrame {
 
@@ -34,6 +35,7 @@ public class Interfaz extends JFrame {
 	private JTextField txtSalida;
 	private double costo = 0;
 	private JLabel lblCosto;
+	private JDateChooser dateChooser;
 
 	/**
 	 * Launch the application.
@@ -137,31 +139,38 @@ public class Interfaz extends JFrame {
 		btnRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+				// Verificar que los campos no estén vacíos
 				if (txtMatricula.getText().isBlank() || txtMarca.getText().isBlank() || txtModelo.getText().isBlank()
 						|| txtColor.getText().isBlank() || comboBox.getSelectedItem().toString().isBlank()) {
-
-				} else {
-					LocalDateTime horaEntrada = LocalDateTime.now();
-
-					// Puedes asignar `null` a la hora de salida, ya que aún no ha salido
-					LocalDateTime horaSalida = null;
-					Vehiculo vehiculo = new Vehiculo(comboBox.getSelectedItem().toString().toLowerCase(),
-							txtMatricula.getText().toString().toUpperCase(), txtMarca.getText().toString(),
-							txtModelo.getText().toString(), txtColor.getText().toString(),
-							txtObservaciones.getText().toString(), horaEntrada, horaSalida);
-
-					// Intentar registrar el vehículo en la base de datos
-					vehiculoDAO.registrarVehiculo(vehiculo);
-					String idLugar = LugarDAO.obtenerIdLugarLibre(comboBox.getSelectedItem().toString().toLowerCase(),
-							txtMatricula.getText());
-
-					// Si se asignó un lugar, actualizar el label
-					if (idLugar != null) {
-						lblLugar.setText(idLugar); // Mostrar el ID del lugar en el label
-					} else {
-						lblLugar.setText("No hay lugares disponibles");
-					}
+					JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
+					return; // Detener el proceso si hay campos vacíos
 				}
+
+				// Verificar si hay lugar disponible antes de registrar el vehículo
+				String idLugar = LugarDAO.obtenerIdLugarLibre(comboBox.getSelectedItem().toString().toLowerCase(),
+						txtMatricula.getText());
+
+				// Si no hay lugar disponible, mostrar mensaje de error y detener el proceso
+				if (idLugar == null) {
+					JOptionPane.showMessageDialog(null, "No hay lugares disponibles para este vehículo.");
+					return; // Detener el proceso si no hay lugar
+				}
+
+				// Si hay lugar disponible, proceder con el registro del vehículo
+				LocalDateTime horaEntrada = LocalDateTime.now();
+				LocalDateTime horaSalida = null; // La hora de salida será null por ahora
+
+				// Crear el objeto vehículo
+				Vehiculo vehiculo = new Vehiculo(comboBox.getSelectedItem().toString().toLowerCase(),
+						txtMatricula.getText().toString().toUpperCase(), txtMarca.getText().toString(),
+						txtModelo.getText().toString(), txtColor.getText().toString(),
+						txtObservaciones.getText().toString(), horaEntrada, horaSalida);
+
+				// Intentar registrar el vehículo en la base de datos
+				vehiculoDAO.registrarVehiculo(vehiculo);
+
+				// Si se asignó un lugar, actualizar el label
+				lblLugar.setText(idLugar); // Mostrar el ID del lugar en el label
 			}
 
 		});
@@ -194,41 +203,52 @@ public class Interfaz extends JFrame {
 		JButton btnSalida = new JButton("Ingresar Salida");
 		btnSalida.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			    String matricula = txtMatSalida.getText();
-			    String horaSalidaText = txtSalida.getText();
+				String matricula = txtMatSalida.getText();
+				String horaSalidaText = txtSalida.getText();
 
-			    // Verificar que la matrícula y la hora de salida no estén vacías
-			    if (matricula.isEmpty() || horaSalidaText.isEmpty()) {
-			        JOptionPane.showMessageDialog(null, "Por favor, ingrese la matrícula y la hora de salida.");
-			        return;
-			    }
+				// Verificar que la matrícula no esté vacía
+				if (matricula.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Por favor, ingrese la matrícula.");
+					return;
+				}
 
-			    try {
-			        // Obtener la fecha actual (sin hora)
-			        LocalDateTime now = LocalDateTime.now();
-			        // Crear una nueva fecha con la hora ingresada por el usuario (sin segundos)
-			        String horaCompleta = now.toLocalDate() + " " + horaSalidaText + ":00"; // Añadir ":00" para los segundos
+				// Si la hora de salida no se ha ingresado en el campo de texto y no se ha
+				// seleccionado una fecha, mostrar un mensaje de advertencia
+				if (horaSalidaText.isEmpty() && dateChooser.getDate() == null) {
+					JOptionPane.showMessageDialog(null, "Por favor, ingrese la hora de salida o seleccione una fecha.");
+					return;
+				}
 
-			        // Convertir la fecha y hora combinadas a un Timestamp
-			        Timestamp horaSalida = Timestamp.valueOf(horaCompleta);
+				try {
+					LocalDateTime horaSalida = null;
 
-			        // Crear una instancia de VehiculoDAO y llamar al método para actualizar
-			        VehiculoDAO vehiculoDAO = new VehiculoDAO();
-			        vehiculoDAO.actualizarHoraSalidaYLugar(matricula, horaSalida);
-			        String costoStr = String.valueOf(costo);
-			        lblCosto.setText(costoStr);
-			        // Mensaje de éxito
-			        JOptionPane.showMessageDialog(null, "Hora de salida y lugar actualizados correctamente.");
-			    } catch (IllegalArgumentException ex) {
-			        // Manejar el error de formato de la hora
-			        JOptionPane.showMessageDialog(null, "Formato de hora incorrecto. Asegúrese de usar 'HH:MM'.");
-			    } catch (Exception ex) {
-			        // Capturar cualquier otro error
-			        ex.printStackTrace();
-			        JOptionPane.showMessageDialog(null, "Ocurrió un error al actualizar la base de datos.");
-			    }
+					if (dateChooser.getDate() != null) {
+						// Si se seleccionó una fecha, combinarla con la hora ingresada
+						LocalDateTime fechaSeleccionada = new java.sql.Date(dateChooser.getDate().getTime())
+								.toLocalDate().atStartOfDay();
+						horaSalida = fechaSeleccionada.withHour(Integer.parseInt(horaSalidaText.split(":")[0]))
+								.withMinute(Integer.parseInt(horaSalidaText.split(":")[1])).withSecond(0);
+					} else if (!horaSalidaText.isEmpty()) {
+						// Si no se seleccionó fecha, usar solo la hora ingresada
+						LocalDateTime now = LocalDateTime.now();
+						String horaCompleta = now.toLocalDate() + " " + horaSalidaText + ":00"; // Añadir ":00" para los
+																								// segundos
+						horaSalida = Timestamp.valueOf(horaCompleta).toLocalDateTime();
+					}
+
+					// Llamar a la lógica de actualización en la base de datos
+					VehiculoDAO vehiculoDAO = new VehiculoDAO();
+					vehiculoDAO.actualizarHoraSalidaYLugar(matricula, Timestamp.valueOf(horaSalida));
+
+					// Si la actualización es exitosa
+					JOptionPane.showMessageDialog(null, "Hora de salida y lugar actualizados correctamente.");
+
+				} catch (Exception ex) {
+					// Capturar cualquier error
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Ocurrió un error al actualizar la base de datos.");
+				}
 			}
-
 		});
 		btnSalida.setBounds(343, 62, 112, 23);
 		panel.add(btnSalida);
@@ -241,17 +261,21 @@ public class Interfaz extends JFrame {
 		lblCosto.setBounds(125, 142, 46, 14);
 		panel.add(lblCosto);
 
-		JLabel lblNewLabel_5 = new JLabel("Hora de salida");
-		lblNewLabel_5.setBounds(29, 104, 86, 14);
+		JLabel lblNewLabel_5 = new JLabel("fecha y hora de salida");
+		lblNewLabel_5.setBounds(10, 107, 120, 14);
 		panel.add(lblNewLabel_5);
 
 		txtSalida = new JTextField();
 		txtSalida.setColumns(10);
-		txtSalida.setBounds(125, 101, 86, 20);
+		txtSalida.setBounds(235, 104, 86, 20);
 		panel.add(txtSalida);
-		
+
+		dateChooser = new JDateChooser();
+		dateChooser.setBounds(145, 104, 80, 20);
+		panel.add(dateChooser);
+
 	}
-	
+
 	public double calcularCosto(Vehiculo vehiculo) {
 		Duration duration = Duration.between(vehiculo.getHoraEntrada(), vehiculo.getHoraSalida());
 		long horas = duration.toHours();

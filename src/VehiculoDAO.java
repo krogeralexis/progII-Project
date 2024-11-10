@@ -18,7 +18,9 @@ public class VehiculoDAO {
 			pstmt.setString(3, vehiculo.getModelo());
 			pstmt.setString(4, vehiculo.getColor());
 			pstmt.setString(5,
-					vehiculo.getObservaciones() != null ? vehiculo.getObservaciones() : "Sin golpes previos");
+					(vehiculo.getObservaciones() == null || vehiculo.getObservaciones().isEmpty())
+							? "Sin golpes previos"
+							: vehiculo.getObservaciones());
 			pstmt.setTimestamp(6, Timestamp.valueOf(vehiculo.getHoraEntrada()));
 
 			if (vehiculo.getHoraSalida() != null) {
