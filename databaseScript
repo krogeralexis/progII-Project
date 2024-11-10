@@ -1,0 +1,24 @@
+
+CREATE DATABASE `estacionamiento` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE estacionamiento;
+CREATE TABLE `lugares` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tipo` varchar(20) DEFAULT NULL,
+  `ocupado` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_lugares_tipo` (`tipo`)
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `vehiculos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `matricula` varchar(7) NOT NULL,
+  `marca` varchar(15) DEFAULT NULL,
+  `modelo` varchar(15) DEFAULT NULL,
+  `color` varchar(15) DEFAULT NULL,
+  `observaciones` text,
+  `hora_entrada` timestamp NULL DEFAULT NULL,
+  `hora_salida` timestamp NULL DEFAULT NULL,
+  `tipo` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Tipo_idx` (`tipo`),
+  CONSTRAINT `fk_tipo` FOREIGN KEY (`tipo`) REFERENCES `lugares` (`tipo`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
