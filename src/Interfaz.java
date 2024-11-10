@@ -26,7 +26,6 @@ public class Interfaz extends JFrame {
 	private JTextField txtMarca;
 	private JTextField txtMatricula;
 	private JTextField txtMatSalida;
-	private JTextField txtIdLugarSalida;
 	private JLabel lblLugar;
 
 	/**
@@ -145,8 +144,14 @@ public class Interfaz extends JFrame {
 					
 					// Intentar registrar el vehículo en la base de datos
 					vehiculoDAO.registrarVehiculo(vehiculo);
-					LugarDAO.obtenerIdLugarLibre(comboBox.getSelectedItem().toString().toLowerCase(), txtMatricula.getText());
-					lblLugar.setText(vehiculo.getLugar());
+					String idLugar = LugarDAO.obtenerIdLugarLibre(comboBox.getSelectedItem().toString().toLowerCase(), txtMatricula.getText());
+
+                    // Si se asignó un lugar, actualizar el label
+                    if (idLugar != null) {
+                        lblLugar.setText(idLugar);  // Mostrar el ID del lugar en el label
+                    } else {
+                        lblLugar.setText("No hay lugares disponibles");
+                    }
 				}
 			}
 
@@ -172,20 +177,10 @@ public class Interfaz extends JFrame {
 		lblNewLabel_3.setBounds(51, 65, 100, 14);
 		panel.add(lblNewLabel_3);
 		
-		JLabel lblNewLabel_4 = new JLabel("Id Lugar");
-		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel_4.setBounds(51, 104, 100, 14);
-		panel.add(lblNewLabel_4);
-		
 		txtMatSalida = new JTextField();
 		txtMatSalida.setBounds(125, 63, 86, 20);
 		panel.add(txtMatSalida);
 		txtMatSalida.setColumns(10);
-		
-		txtIdLugarSalida = new JTextField();
-		txtIdLugarSalida.setBounds(125, 102, 86, 20);
-		panel.add(txtIdLugarSalida);
-		txtIdLugarSalida.setColumns(10);
 		
 		JButton btnSalida = new JButton("Ingresar Salida");
 		btnSalida.setBounds(343, 62, 112, 23);

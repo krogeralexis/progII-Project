@@ -15,29 +15,43 @@ public class LugarDAO {
      */
     public static String obtenerIdLugarLibre(String tipoVehiculo, String matricula) {
         Vehiculo vehiculo = new Vehiculo(null, null, null, null, null, null, null, null);
-        tipoVehiculo = vehiculo.getTipoVehiculo();
         String sqlSelect = "SELECT id FROM lugares WHERE tipo = ? AND ocupado = 0 LIMIT 1";
         String sqlUpdate = "UPDATE lugares SET ocupado = 1, matricula = ? WHERE id = ?";
         String lugarIdStr = null;
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmtSelect = conn.prepareStatement(sqlSelect)) {
+        // Conexión a la base de datos
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            if (conn == null) {
+                System.out.println("Error: No se pudo establecer conexión con la base de datos.");
+                return null;
+            } else {
+                System.out.println("Conexión establecida exitosamente.");
+            }
 
-            pstmtSelect.setString(1, tipoVehiculo); // Establece el tipo de vehículo en la consulta
+            // Preparar la consulta para buscar un lugar libre
+            try (PreparedStatement pstmtSelect = conn.prepareStatement(sqlSelect)) {
+                pstmtSelect.setString(1, tipoVehiculo); // Establece el tipo de vehículo en la consulta
+                System.out.println("Ejecutando consulta SQL: " + pstmtSelect.toString());
 
-            try (ResultSet rs = pstmtSelect.executeQuery()) { // Ejecuta la consulta y obtiene el resultado
-                if (rs.next()) {
-                    int lugarId = rs.getInt("id"); // Obtiene el valor de la columna "id"
-                    lugarIdStr = String.valueOf(lugarId);
+                try (ResultSet rs = pstmtSelect.executeQuery()) {
+                    System.out.println("Resultado de la consulta obtenido.");
+                    if (rs.next()) {
+                        int lugarId = rs.getInt("id"); // Obtiene el valor de la columna "id"
+                        lugarIdStr = String.valueOf(lugarId);
+                        System.out.println("Lugar encontrado: ID = " + lugarId);
 
-                    // Actualiza el registro para ocupar el lugar y asignar la matrícula
-                    try (PreparedStatement pstmtUpdate = conn.prepareStatement(sqlUpdate)) {
-                        pstmtUpdate.setString(1, vehiculo.getMatricula()); // Establece la matrícula
-                        pstmtUpdate.setInt(2, lugarId); // Establece el ID del lugar
-                        pstmtUpdate.executeUpdate(); // Ejecuta la actualización
+                        // Preparar la actualización para marcar el lugar como ocupado y asignar la matrícula
+                        try (PreparedStatement pstmtUpdate = conn.prepareStatement(sqlUpdate)) {
+                            pstmtUpdate.setString(1, matricula); // Establece la matrícula
+                            pstmtUpdate.setInt(2, lugarId); // Establece el ID del lugar
+                            pstmtUpdate.executeUpdate(); // Ejecuta la actualización
+                            System.out.println("Lugar ocupado y matrícula asignada.");
+                        }
+                        // Establecer el lugar en el objeto vehículo (si es necesario)
+                        vehiculo.setLugar(lugarIdStr);
+                    } else {
+                        System.out.println("No se encontraron lugares libres para el tipo de vehículo: " + tipoVehiculo);
                     }
-                    
-                    vehiculo.setLugar(lugarIdStr);
                 }
             }
         } catch (SQLException e) {
@@ -45,6 +59,6 @@ public class LugarDAO {
             System.out.println("Error al obtener el ID del lugar libre o actualizar el lugar.");
         }
 
-        return vehiculo.setLugar(lugarIdStr); // Devuelve el ID encontrado o null si no se encontró un lugar libre
+        return lugarIdStr; // Devuelve el ID del lugar encontrado o null si no se encontró lugar libre
     }
 }
