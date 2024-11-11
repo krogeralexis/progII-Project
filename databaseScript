@@ -1,14 +1,14 @@
-
-CREATE DATABASE `estacionamiento` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE estacionamiento;
+CREATE DATABASE `estacionamiento`;
+use estacionamiento;
 CREATE TABLE `lugares` (
   `id` int NOT NULL AUTO_INCREMENT,
   `tipo` varchar(20) DEFAULT NULL,
   `ocupado` tinyint(1) DEFAULT NULL,
+  `matricula` varchar(8) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_lugares_tipo` (`tipo`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-CREATE TABLE `vehiculos` (
+) AUTO_INCREMENT=0;
+	CREATE TABLE `vehiculos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `matricula` varchar(7) NOT NULL,
   `marca` varchar(15) DEFAULT NULL,
@@ -21,4 +21,63 @@ CREATE TABLE `vehiculos` (
   PRIMARY KEY (`id`),
   KEY `Tipo_idx` (`tipo`),
   CONSTRAINT `fk_tipo` FOREIGN KEY (`tipo`) REFERENCES `lugares` (`tipo`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) AUTO_INCREMENT=0;
+-- Insertar lugares para camionetas
+INSERT INTO lugares (tipo, ocupado, matricula)
+VALUES
+('camioneta', 0, NULL),
+('camioneta', 0, NULL),
+('camioneta', 0, NULL),
+('camioneta', 0, NULL),
+('camioneta', 0, NULL),
+('camioneta', 0, NULL);
+
+-- Insertar lugares para autos
+INSERT INTO lugares (tipo, ocupado, matricula)
+VALUES
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL),
+('auto', 0, NULL);
+
+-- Insertar lugares para motos
+INSERT INTO lugares (tipo, ocupado, matricula)
+VALUES
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL),
+('moto', 0, NULL);
+
+
