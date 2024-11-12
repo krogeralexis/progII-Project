@@ -33,9 +33,10 @@ public class Interfaz extends JFrame {
 	private JTextField txtMatSalida;
 	private JLabel lblLugar;
 	private JTextField txtSalida;
-	private double costo = 0;
+	private float costo = 0;
 	private JLabel lblCosto;
 	private JDateChooser dateChooser;
+	protected Vehiculo vehiculo;
 
 	/**
 	 * Launch the application.
@@ -165,7 +166,6 @@ public class Interfaz extends JFrame {
 						txtMatricula.getText().toString().toUpperCase(), txtMarca.getText().toString(),
 						txtModelo.getText().toString(), txtColor.getText().toString(),
 						txtObservaciones.getText().toString(), horaEntrada, horaSalida);
-
 				// Intentar registrar el vehículo en la base de datos
 				vehiculoDAO.registrarVehiculo(vehiculo);
 
@@ -203,6 +203,7 @@ public class Interfaz extends JFrame {
 		JButton btnSalida = new JButton("Ingresar Salida");
 		btnSalida.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				String matricula = txtMatSalida.getText();
 				String horaSalidaText = txtSalida.getText();
 
@@ -239,7 +240,9 @@ public class Interfaz extends JFrame {
 					// Llamar a la lógica de actualización en la base de datos
 					VehiculoDAO vehiculoDAO = new VehiculoDAO();
 					vehiculoDAO.actualizarHoraSalidaYLugar(matricula, Timestamp.valueOf(horaSalida));
-
+					String costoStr = Float.toString(Vehiculo.getCosto());
+					System.out.print(Vehiculo.getCosto());
+					lblCosto.setText(costoStr);
 					// Si la actualización es exitosa
 					JOptionPane.showMessageDialog(null, "Hora de salida y lugar actualizados correctamente.");
 
@@ -276,23 +279,4 @@ public class Interfaz extends JFrame {
 
 	}
 
-	public double calcularCosto(Vehiculo vehiculo) {
-		Duration duration = Duration.between(vehiculo.getHoraEntrada(), vehiculo.getHoraSalida());
-		long horas = duration.toHours();
-		long minutos = duration.toMinutes() % 60;
-
-		if (horas >= 8) {
-			costo += 130; // Cobro por día
-		} else {
-			if (vehiculo.getTipoVehiculo() == "auto") {
-				costo += (minutos > 30 ? (minutos / 60 + 1) * 25 : (minutos > 0 ? 25 : 0));
-			} else if (vehiculo.getTipoVehiculo() == "moto") {
-				costo += (minutos > 30 ? (minutos / 60 + 1) * 35 : (minutos > 0 ? 35 : 0));
-			} else if (vehiculo.getTipoVehiculo() == "camioneta") {
-				costo += (minutos > 30 ? (minutos / 60 + 1) * 45 : (minutos > 0 ? 45 : 0));
-			}
-		}
-
-		return costo;
-	}
 }
