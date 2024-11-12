@@ -13,7 +13,7 @@ public class Vehiculo {
     private String lugar;
     private LocalDateTime horaEntrada;
     private LocalDateTime horaSalida;
-    private static float costo;
+    private static int costo;
 
 
     public Vehiculo(String matricula, String marca,String tipoVehiculo, String modelo, String color, String observaciones, LocalDateTime horaEntrada, LocalDateTime horaSalida) {
@@ -36,26 +36,12 @@ public class Vehiculo {
 	public String getMatricula() {
 		return matricula;
 	}
-	public static float getCosto() {
+	public static int getCosto() {
 		return costo;
 	}
-	public void setCosto(float costo) {
-		Duration duration = Duration.between(getHoraEntrada(), getHoraSalida());
-		long horas = duration.toHours();
-		long minutos = duration.toMinutes() % 60;
-
-		if (horas >= 8) {
-			costo += 130; // Cobro por día
-		} else {
-			if (getTipoVehiculo() == "auto") {
-				costo += (minutos > 30 ? (minutos / 60 + 1) * 25 : (minutos > 0 ? 25 : 0));
-			} else if (getTipoVehiculo() == "moto") {
-				costo += (minutos > 30 ? (minutos / 60 + 1) * 35 : (minutos > 0 ? 35 : 0));
-			} else if (getTipoVehiculo() == "camioneta") {
-				costo += (minutos > 30 ? (minutos / 60 + 1) * 45 : (minutos > 0 ? 45 : 0));
-			}
-		}
-		this.costo = costo;
+	public static void setCosto(int costo) {
+		
+		Vehiculo.costo = costo;
 	}
 	public String getLugar() {
 		return lugar;
