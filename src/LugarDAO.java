@@ -20,14 +20,25 @@ public class LugarDAO {
         String sqlSelect = "SELECT id FROM lugares WHERE tipo = ? AND ocupado = 0 LIMIT 1";
         String sqlUpdate = "UPDATE lugares SET ocupado = 1, matricula = ? WHERE id = ?";
         String lugarIdStr = null;
+        String sqlCheckMatricula = "SELECT matricula FROM lugares WHERE matricula = ?";
 
         // Conexión a la base de datos
         try (Connection conn = DatabaseConnection.getConnection()) {
             if (conn == null) {
-            	JOptionPane.showMessageDialog(null, "Error: No se pudo establecer conexión con la base de datos.", "Error de Conexión", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error: No se pudo establecer conexión con la base de datos.", "Error de Conexión", JOptionPane.ERROR_MESSAGE);
                 return null;
-            } else {
-            	JOptionPane.showMessageDialog(null, "Conexión establecida exitosamente.", "Conexión Exitosa", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            // Verificar si la matrícula ya está registrada
+            try (PreparedStatement pstmtCheckMatricula = conn.prepareStatement(sqlCheckMatricula)) {
+                pstmtCheckMatricula.setString(1, matricula); // Establece la matrícula para la búsqueda
+                try (ResultSet rsMatricula = pstmtCheckMatricula.executeQuery()) {
+                    if (rsMatricula.next()) {
+                        // Si la matrícula ya existe, mostrar un mensaje y cancelar el proceso
+                        JOptionPane.showMessageDialog(null, "Error: La matrícula " + matricula + " ya está registrada.", "Matrícula Duplicada", JOptionPane.ERROR_MESSAGE);
+                        return null; // Cancelar el alta
+                    }
+                }
             }
 
             // Preparar la consulta para buscar un lugar libre
@@ -35,12 +46,10 @@ public class LugarDAO {
                 pstmtSelect.setString(1, tipoVehiculo); // Establece el tipo de vehículo en la consulta
 
                 try (ResultSet rs = pstmtSelect.executeQuery()) {
-                    
                     if (rs.next()) {
                         int lugarId = rs.getInt("id"); // Obtiene el valor de la columna "id"
                         lugarIdStr = String.valueOf(lugarId);
                         JOptionPane.showMessageDialog(null, "Lugar encontrado: ID = " + lugarId, "Resultado de Búsqueda", JOptionPane.INFORMATION_MESSAGE);
-
 
                         // Preparar la actualización para marcar el lugar como ocupado y asignar la matrícula
                         try (PreparedStatement pstmtUpdate = conn.prepareStatement(sqlUpdate)) {
@@ -51,15 +60,13 @@ public class LugarDAO {
                         // Establecer el lugar en el objeto vehículo (si es necesario)
                         vehiculo.setLugar(lugarIdStr);
                     } else {
-                    	JOptionPane.showMessageDialog(null, "No se encontraron lugares libres para el tipo de vehículo: " + tipoVehiculo, "Sin Lugares Disponibles", JOptionPane.WARNING_MESSAGE);
-
+                        JOptionPane.showMessageDialog(null, "No se encontraron lugares libres para el tipo de vehículo: " + tipoVehiculo, "Sin Lugares Disponibles", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al obtener el ID del lugar libre o actualizar el lugar.", "Error de Operación", JOptionPane.ERROR_MESSAGE);
-
         }
 
         return lugarIdStr; // Devuelve el ID del lugar encontrado o null si no se encontró lugar libre

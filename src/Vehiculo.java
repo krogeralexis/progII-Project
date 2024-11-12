@@ -11,7 +11,7 @@ public class Vehiculo {
     private String observaciones;
     private String tipoVehiculo;
     private String lugar;
-    private LocalDateTime horaEntrada;
+    private static LocalDateTime horaEntrada;
     private LocalDateTime horaSalida;
     private static int costo;
 
@@ -76,11 +76,11 @@ public class Vehiculo {
 	public void setObservaciones(String observaciones) {
 		this.observaciones = observaciones;
 	}
-	public LocalDateTime getHoraEntrada() {
+	public static LocalDateTime getHoraEntrada() {
 		return horaEntrada;
 	}
 	public void setHoraEntrada(LocalDateTime horaEntrada) {
-		this.horaEntrada = horaEntrada;
+		Vehiculo.horaEntrada = horaEntrada;
 	}
 	public LocalDateTime getHoraSalida() {
 		return horaSalida;

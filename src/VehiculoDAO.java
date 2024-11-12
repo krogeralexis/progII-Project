@@ -10,41 +10,39 @@ import java.time.LocalDateTime;
 import javax.swing.JOptionPane;
 
 public class VehiculoDAO {
-
+	
+	
+	
 	public void registrarVehiculo(Vehiculo vehiculo) {
-		String sql = "INSERT INTO vehiculos (matricula, marca, modelo, color, observaciones, hora_entrada, hora_salida, tipo) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	    String sql = "INSERT INTO vehiculos (matricula, tipo, marca, modelo, color, observaciones, hora_entrada, hora_salida) "
+	               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-		try (Connection conn = DatabaseConnection.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    try (Connection conn = DatabaseConnection.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-			pstmt.setString(1, vehiculo.getMarca());
-			pstmt.setString(2, vehiculo.getTipoVehiculo());
-			pstmt.setString(3, vehiculo.getModelo());
-			pstmt.setString(4, vehiculo.getColor());
-			pstmt.setString(5,
-					(vehiculo.getObservaciones() == null || vehiculo.getObservaciones().isEmpty())
-							? "Sin golpes previos"
-							: vehiculo.getObservaciones());
-			pstmt.setTimestamp(6, Timestamp.valueOf(vehiculo.getHoraEntrada()));
+	        pstmt.setString(1, vehiculo.getMatricula().toUpperCase()); // 1
+	        pstmt.setString(2, vehiculo.getTipoVehiculo()); // 2
+	        pstmt.setString(3, vehiculo.getMarca()); // 3
+	        pstmt.setString(4, vehiculo.getModelo()); // 4
+	        pstmt.setString(5, vehiculo.getColor()); // 5
+	        pstmt.setString(6, vehiculo.getObservaciones().isEmpty() ? "Sin golpes previos" : vehiculo.getObservaciones()); // 6
+	        pstmt.setTimestamp(7, Timestamp.valueOf(vehiculo.getHoraEntrada())); // 7
 
-			if (vehiculo.getHoraSalida() != null) {
-				pstmt.setTimestamp(7, Timestamp.valueOf(vehiculo.getHoraSalida()));
-			} else {
-				pstmt.setNull(7, java.sql.Types.TIMESTAMP);
-			}
-			pstmt.setString(8, vehiculo.getMatricula());// 8
+	        if (vehiculo.getHoraSalida() != null) {
+	            pstmt.setTimestamp(8, Timestamp.valueOf(vehiculo.getHoraSalida())); // 8
+	        } else {
+	            pstmt.setNull(8, java.sql.Types.TIMESTAMP); // 8
+	        }
 
-			pstmt.executeUpdate();
-			JOptionPane.showMessageDialog(null, "Vehículo registrado correctamente en la base de datos.", 
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	        pstmt.executeUpdate();
+	        JOptionPane.showMessageDialog(null, "Vehículo registrado correctamente en la base de datos.", 
+	                "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error al registrar el vehículo en la base de datos.", 
-                    "Error", JOptionPane.ERROR_MESSAGE);
-
-		}
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(null, "Error al registrar el vehículo en la base de datos.", 
+	                "Error", JOptionPane.ERROR_MESSAGE);
+	    }
 	}
 
 	public Vehiculo obtenerVehiculoPorMatricula(String matricula) {
