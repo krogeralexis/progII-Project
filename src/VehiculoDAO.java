@@ -200,7 +200,7 @@ public class VehiculoDAO {
 	                    LocalDateTime horaSalidaLocal = horaSalida.toLocalDateTime();
 	                    double horasEstacionado = Duration.between(horaEntrada, horaSalidaLocal).toMinutes() / 60.0;  // Calcular tiempo en horas
 
-	                    // Llamar al método getTarifa, que ahora incluye el cálculo de las fracciones y el redondeo
+	                    // Llamar al método getTarifa, que ahora incluye el cálculo de las fracciones y el redonde
 	                    int costo = getTarifa(tipo, horasEstacionado);
 	                    Vehiculo.setCosto(costo);
 
