@@ -17,6 +17,8 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import com.toedter.calendar.JDateChooser;
 
@@ -139,6 +141,17 @@ public class Interfaz extends JFrame {
 		JButton btnRegistrar = new JButton("Registrar");
 		btnRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String matricula = txtMatricula.getText().trim();
+                String marca = txtMarca.getText().trim();
+                String modelo = txtModelo.getText().trim();
+                String color = txtColor.getText().trim();
+                String observaciones = txtObservaciones.getText().trim();
+             // Validación de matrícula (3 letras + 3 o 4 números)
+                if (!Pattern.matches("^[A-S]{3}\\d{3,4}$", matricula.toUpperCase())) {
+                    JOptionPane.showMessageDialog(null, "La matrícula debe tener 3 letras y 3 o 4 números.");
+                    return;
+                }
+
 
 				// Verificar que los campos no estén vacíos
 				if (txtMatricula.getText().isBlank() || txtMarca.getText().isBlank() || txtModelo.getText().isBlank()
@@ -236,7 +249,9 @@ public class Interfaz extends JFrame {
 
 			            // Llamar a actualizarHoraSalidaYLugar para actualizar la salida, el costo y el lugar
 			            vehiculoDAO.actualizarHoraSalidaYLugar(matricula, Timestamp.valueOf(horaSalida));
-
+			            if (Vehiculo.getCosto() == 0 ){
+			            	return;
+			            }
 			            // Mensaje de confirmación al usuario
 			            JOptionPane.showMessageDialog(null, "Salida procesada correctamente.");
 
@@ -278,7 +293,7 @@ public class Interfaz extends JFrame {
 			    }
 			});
 
-		btnSalida.setBounds(343, 62, 112, 23);
+		btnSalida.setBounds(314, 62, 141, 23);
 		panel.add(btnSalida);
 
 		JLabel lblNewLabel_5 = new JLabel("fecha y hora de salida");
@@ -290,7 +305,8 @@ public class Interfaz extends JFrame {
 		txtSalida.setBounds(235, 104, 86, 20);
 		panel.add(txtSalida);
 
-		dateChooser = new JDateChooser();
+		JDateChooser dateChooser = new JDateChooser();
+		dateChooser.setDate(new Date()); // Establece la fecha actual como predeterminada
 		dateChooser.setBounds(145, 104, 80, 20);
 		panel.add(dateChooser);
 

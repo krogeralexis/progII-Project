@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -193,8 +194,8 @@ public class VehiculoDAO {
 	                    } else {
 	                    	JOptionPane.showMessageDialog(null, "La hora de salida ya está registrada.", 
 	                                "Error", JOptionPane.ERROR_MESSAGE);
-
-	                    }
+	                    	return;
+	                    } 
 
 	                    // 2. Calcular el costo basado en la tarifa y el tiempo de estacionamiento
 	                    LocalDateTime horaSalidaLocal = horaSalida.toLocalDateTime();
