@@ -73,7 +73,6 @@ VALUES
 ('auto', 0, NULL),
 ('auto', 0, NULL),
 ('auto', 0, NULL),
-('auto', 0, NULL),
 ('auto', 0, NULL);
 
 -- Insertar lugares para motos
@@ -95,4 +94,30 @@ VALUES
 ('moto', 0, NULL),
 ('moto', 0, NULL);
 
--- Insertar vehiculos de ejemplo (con matricula, tipo y otros detalles)
+-- Insert de ejemplos
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('MRA123', 'Yamaha', 'FZ', 'Negro', 'moto', '2024-11-12 00:32:16', '2024-11-12 01:02:16', 15, 'Sin golpes previos, pintura en buen estado');
+
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('ABC123', 'Chevrolet', 'Spark', 'Rojo', 'auto', '2024-11-12 00:32:16', '2024-11-12 01:02:16', 25, 'Avería en el faro izquierdo, pintura desgastada');
+
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('FGH1234', 'Nissan', 'Frontier', 'Blanca', 'camioneta', '2024-11-12 00:32:16', '2024-11-12 01:02:16', 35, 'Sin daños visibles, llantas nuevas');
+
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('DEF456', 'Toyota', 'Corolla', 'Azul', 'auto', '2024-11-11 22:02:16', '2024-11-12 06:02:16', 250, 'Vidrio delantero agrietado, sin otros daños');
+
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('IJK7890', 'Ford', 'Ranger', 'Negra', 'camioneta', '2024-11-11 22:02:16', '2024-11-12 06:02:16', 350, 'Sin daños, pintura intacta');
+
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('LMN234', 'Honda', 'CB500', 'Rojo', 'moto', '2024-11-11 22:02:16', '2024-11-12 06:02:16', 130, 'Bateria nueva, sin golpes');
+
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('XYZ123', 'Ford', 'Fiesta', 'Verde', 'auto', '2024-11-11 16:02:16', '2024-11-11 23:02:16', 175, 'Puerta trasera derecha con abolladura');
+
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('RST4567', 'Chevrolet', 'S10', 'Gris', 'camioneta', '2024-11-11 16:02:16', '2024-11-11 23:02:16', 245, 'Sin daños visibles, bien mantenida');
+
+INSERT INTO vehiculos (matricula, marca, modelo, color, tipo, hora_entrada, hora_salida, costo, observaciones) 
+VALUES ('OPQ567', 'Kawasaki', 'Ninja', 'Verde', 'moto', '2024-11-11 16:02:16', '2024-11-11 23:02:16', 105, 'Sin daños, llantas en buen estado');
