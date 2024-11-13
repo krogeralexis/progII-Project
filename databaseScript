@@ -1,14 +1,20 @@
-CREATE DATABASE `estacionamiento`;
-USE estacionamiento;
-CREATE TABLE `lugares` (
+-- Crear la base de datos
+CREATE DATABASE IF NOT EXISTS `estacionamiento`;
+USE `estacionamiento`;
+
+-- Crear la tabla lugares
+CREATE TABLE IF NOT EXISTS `lugares` (
   `id` int NOT NULL AUTO_INCREMENT,
   `tipo` varchar(20) DEFAULT NULL,
   `ocupado` tinyint(1) DEFAULT NULL,
   `matricula` varchar(8) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_matricula` (`matricula`),
   KEY `idx_lugares_tipo` (`tipo`)
 ) AUTO_INCREMENT=0;
-CREATE TABLE `vehiculos` (
+
+-- Crear la tabla vehiculos
+CREATE TABLE IF NOT EXISTS `vehiculos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `matricula` varchar(7) NOT NULL,
   `marca` varchar(15) DEFAULT NULL,
@@ -18,11 +24,20 @@ CREATE TABLE `vehiculos` (
   `hora_entrada` timestamp NULL DEFAULT NULL,
   `hora_salida` timestamp NULL DEFAULT NULL,
   `tipo` varchar(20) NOT NULL,
-  `costo` double DEFAULT NULL,
+  `costo` INT DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Tipo_idx` (`tipo`),
   CONSTRAINT `fk_tipo` FOREIGN KEY (`tipo`) REFERENCES `lugares` (`tipo`)
 ) AUTO_INCREMENT=0;
+
+-- Insertar tipos en la tabla lugares (deben existir para poder referenciarlos en vehiculos)
+INSERT INTO lugares (tipo, ocupado, matricula)
+VALUES
+('camioneta', 0, NULL),
+('auto', 0, NULL),
+('moto', 0, NULL);
+
+-- Insertar lugares para camionetas
 INSERT INTO lugares (tipo, ocupado, matricula)
 VALUES
 ('camioneta', 0, NULL),
@@ -79,3 +94,5 @@ VALUES
 ('moto', 0, NULL),
 ('moto', 0, NULL),
 ('moto', 0, NULL);
+
+-- Insertar vehiculos de ejemplo (con matricula, tipo y otros detalles)
