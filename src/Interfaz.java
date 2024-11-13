@@ -147,7 +147,7 @@ public class Interfaz extends JFrame {
                 String color = txtColor.getText().trim();
                 String observaciones = txtObservaciones.getText().trim();
              // Validación de matrícula (3 letras + 3 o 4 números)
-                if (!Pattern.matches("^[A-S]{3}\\d{3,4}$", matricula.toUpperCase())) {
+                if (!Pattern.matches("^[A-S][A-Z]{2}\\d{3,4}$", matricula.toUpperCase())) {
                     JOptionPane.showMessageDialog(null, "La matrícula debe tener 3 letras y 3 o 4 números.");
                     return;
                 }
@@ -305,7 +305,7 @@ public class Interfaz extends JFrame {
 		txtSalida.setBounds(235, 104, 86, 20);
 		panel.add(txtSalida);
 
-		JDateChooser dateChooser = new JDateChooser();
+		dateChooser = new JDateChooser();
 		dateChooser.setDate(new Date()); // Establece la fecha actual como predeterminada
 		dateChooser.setBounds(145, 104, 80, 20);
 		panel.add(dateChooser);
