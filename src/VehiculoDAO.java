@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 
 public class VehiculoDAO {
 
-	public void registrarVehiculo(Vehiculo vehiculo) {
+	public boolean registrarVehiculo(Vehiculo vehiculo) {
 		String sql = "INSERT INTO vehiculos (matricula, marca, modelo, color, observaciones, hora_entrada, hora_salida, tipo) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -38,13 +38,14 @@ public class VehiculoDAO {
 			pstmt.executeUpdate();
 			JOptionPane.showMessageDialog(null, "Vehículo registrado correctamente en la base de datos.", 
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error al registrar el vehículo en la base de datos.", 
                     "Error", JOptionPane.ERROR_MESSAGE);
-
+			return false;
 		}
+		
 	}
 
 	public Vehiculo obtenerVehiculoPorMatricula(String matricula) {
@@ -189,13 +190,12 @@ public class VehiculoDAO {
 	                            pstmtUpdateHoraSalida.executeUpdate();
 	                            JOptionPane.showMessageDialog(null, "Hora de salida registrada correctamente.", 
 	                                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
 	                        }
 	                    } else {
-	                    	JOptionPane.showMessageDialog(null, "La hora de salida ya está registrada.", 
+	                        JOptionPane.showMessageDialog(null, "La hora de salida ya está registrada.", 
 	                                "Error", JOptionPane.ERROR_MESSAGE);
-	                    	return;
-	                    } 
+	                        return;  // Detener el proceso si la hora de salida ya está registrada
+	                    }
 
 	                    // 2. Calcular el costo basado en la tarifa y el tiempo de estacionamiento
 	                    LocalDateTime horaSalidaLocal = horaSalida.toLocalDateTime();
@@ -210,24 +210,22 @@ public class VehiculoDAO {
 	                        pstmtUpdateCosto.setDouble(1, costo);
 	                        pstmtUpdateCosto.setString(2, matricula);
 	                        pstmtUpdateCosto.executeUpdate();
-	                        
 	                    }
 
 	                    // 4. Actualizar la tabla de lugares, poniendo ocupado = 0 y matricula = null
 	                    try (PreparedStatement pstmtUpdateLugar = conn.prepareStatement(updateLugarSql)) {
 	                        pstmtUpdateLugar.setString(1, matricula);
 	                        pstmtUpdateLugar.executeUpdate();
-	                        
 	                    }
 	                } else {
-	                	JOptionPane.showMessageDialog(null, "No se encontró un vehículo con la matrícula proporcionada.", 
-	                              "Error", JOptionPane.ERROR_MESSAGE);
-
+	                    JOptionPane.showMessageDialog(null, "No se encontró un vehículo con la matrícula proporcionada.", 
+	                            "Error", JOptionPane.ERROR_MESSAGE);
 	                }
 	            }
 	        }
 	    }
 	}
+
 
 
 }

@@ -38,8 +38,6 @@ public class Interfaz extends JFrame {
 	private JTextField txtSalida;
 	private JDateChooser dateChooser;
 	protected Vehiculo vehiculo;
-	private float costo;
-
 	/**
 	 * Launch the application.
 	 */
@@ -122,7 +120,6 @@ public class Interfaz extends JFrame {
 		txtColor.setBounds(134, 134, 86, 20);
 		panel_2.add(txtColor);
 		txtColor.setColumns(10);
-
 		txtModelo = new JTextField();
 		txtModelo.setBounds(134, 109, 86, 20);
 		panel_2.add(txtModelo);
@@ -142,16 +139,16 @@ public class Interfaz extends JFrame {
 		btnRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String matricula = txtMatricula.getText().trim();
-                String marca = txtMarca.getText().trim();
-                String modelo = txtModelo.getText().trim();
-                String color = txtColor.getText().trim();
-                String observaciones = txtObservaciones.getText().trim();
-             // Validación de matrícula (3 letras + 3 o 4 números)
-                if (!Pattern.matches("^[A-S][A-Z]{2}\\d{3,4}$", matricula.toUpperCase())) {
-                    JOptionPane.showMessageDialog(null, "La matrícula debe tener 3 letras y 3 o 4 números.");
-                    return;
-                }
+				txtMarca.getText().trim();
+				txtModelo.getText().trim();
+				txtColor.getText().trim();
+				txtObservaciones.getText().trim();
 
+				// Validación de matrícula (3 letras + 3 o 4 números)
+				if (!Pattern.matches("^[A-S][A-Z]{2}\\d{3,4}$", matricula.toUpperCase())) {
+					JOptionPane.showMessageDialog(null, "La matrícula debe tener 3 letras y 3 o 4 números.");
+					return;
+				}
 
 				// Verificar que los campos no estén vacíos
 				if (txtMatricula.getText().isBlank() || txtMarca.getText().isBlank() || txtModelo.getText().isBlank()
@@ -179,14 +176,22 @@ public class Interfaz extends JFrame {
 						txtMatricula.getText().toString().toUpperCase(), txtMarca.getText().toString(),
 						txtModelo.getText().toString(), txtColor.getText().toString(),
 						txtObservaciones.getText().toString(), horaEntrada, horaSalida);
-				
+
 				// Intentar registrar el vehículo en la base de datos
-				vehiculoDAO.registrarVehiculo(vehiculo);
+				boolean registrado = vehiculoDAO.registrarVehiculo(vehiculo);
 
-				// Si se asignó un lugar, actualizar el label
-				lblLugar.setText(idLugar); // Mostrar el ID del lugar en el label
+				// Si el registro fue exitoso, limpiar los campos y actualizar el label del
+				// lugar
+				if (registrado) {
+					txtMatricula.setText("");
+					txtMarca.setText("");
+					txtModelo.setText("");
+					txtColor.setText("");
+					txtObservaciones.setText("");
+					comboBox.setSelectedIndex(-1); // Reiniciar el combo box
+					lblLugar.setText(idLugar); // Mostrar el ID del lugar en el label
+				}
 			}
-
 		});
 		btnRegistrar.setBounds(320, 83, 89, 23);
 		panel_2.add(btnRegistrar);
@@ -216,82 +221,83 @@ public class Interfaz extends JFrame {
 
 		JButton btnSalida = new JButton("Ingresar Salida");
 		btnSalida.addActionListener(new ActionListener() {
-			    public void actionPerformed(ActionEvent e) {
-			        String matricula = txtMatSalida.getText();  // Obtener la matrícula desde el campo de texto
-			        String horaSalidaText = txtSalida.getText();  // Obtener la hora de salida desde el campo de texto
+			public void actionPerformed(ActionEvent e) {
+				String matricula = txtMatSalida.getText(); // Obtener la matrícula desde el campo de texto
+				String horaSalidaText = txtSalida.getText(); // Obtener la hora de salida desde el campo de texto
 
-			        // Validación de la matrícula
-			        if (matricula.isEmpty()) {
-			            JOptionPane.showMessageDialog(null, "Por favor, ingrese la matrícula.");
-			            return;
-			        }
+				// Validación de la matrícula
+				if (matricula.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Por favor, ingrese la matrícula.");
+					return;
+				}
 
-			        // Validación de la hora de salida
-			        if (horaSalidaText.isEmpty() && dateChooser.getDate() == null) {
-			            JOptionPane.showMessageDialog(null, "Por favor, ingrese la hora de salida o seleccione una fecha.");
-			            return;
-			        }
+				// Validación de la hora de salida
+				if (horaSalidaText.isEmpty() && dateChooser.getDate() == null) {
+					JOptionPane.showMessageDialog(null, "Por favor, ingrese la hora de salida o seleccione una fecha.");
+					return;
+				}
 
-			        try {
-			            LocalDateTime horaSalida = null;
+				try {
+					LocalDateTime horaSalida = null;
 
-			            // Si se seleccionó una fecha en el dateChooser, combinamos con la hora ingresada en txtSalida
-			            if (dateChooser.getDate() != null) {
-			                LocalDateTime fechaSeleccionada = new java.sql.Date(dateChooser.getDate().getTime())
-			                        .toLocalDate().atStartOfDay();
-			                // Obtener la hora y minutos de la cadena horaSalidaText
-			                horaSalida = fechaSeleccionada.withHour(Integer.parseInt(horaSalidaText.substring(0, 2)))
-			                        .withMinute(Integer.parseInt(horaSalidaText.substring(3, 5)));
-			            } else {
-			                // Si no se seleccionó fecha, se usa directamente la hora proporcionada en el campo de texto
-			                horaSalida = LocalDateTime.parse(horaSalidaText);
-			            }
+					// Si se seleccionó una fecha en el dateChooser, combinamos con la hora
+					// ingresada en txtSalida
+					if (dateChooser.getDate() != null) {
+						LocalDateTime fechaSeleccionada = new java.sql.Date(dateChooser.getDate().getTime())
+								.toLocalDate().atStartOfDay();
+						// Obtener la hora y minutos de la cadena horaSalidaText
+						horaSalida = fechaSeleccionada.withHour(Integer.parseInt(horaSalidaText.substring(0, 2)))
+								.withMinute(Integer.parseInt(horaSalidaText.substring(3, 5)));
+					} else {
+						// Si no se seleccionó fecha, se usa directamente la hora proporcionada en el
+						// campo de texto
+						horaSalida = LocalDateTime.parse(horaSalidaText);
+					}
 
-			            // Llamar a actualizarHoraSalidaYLugar para actualizar la salida, el costo y el lugar
-			            vehiculoDAO.actualizarHoraSalidaYLugar(matricula, Timestamp.valueOf(horaSalida));
-			            if (Vehiculo.getCosto() == 0 ){
-			            	return;
-			            }
-			            // Mensaje de confirmación al usuario
-			            JOptionPane.showMessageDialog(null, "Salida procesada correctamente.");
+					// Llamar a actualizarHoraSalidaYLugar para actualizar la salida, el costo y el
+					// lugar
+					vehiculoDAO.actualizarHoraSalidaYLugar(matricula, Timestamp.valueOf(horaSalida));
+					if (Vehiculo.getCosto() == 0) {
+						return;
+					}
+					// Mensaje de confirmación al usuario
+					JOptionPane.showMessageDialog(null, "Salida procesada correctamente.");
 
-			            // Mostrar los datos del vehículo
-			            Vehiculo vehiculo = vehiculoDAO.obtenerVehiculoPorMatricula(matricula); // Obtener el vehículo de la base de datos
-			            if (vehiculo != null) {
-			                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+					// Mostrar los datos del vehículo
+					Vehiculo vehiculo = vehiculoDAO.obtenerVehiculoPorMatricula(matricula); // Obtener el vehículo de la
+																							// base de datos
+					if (vehiculo != null) {
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-			                String horaEntradaFormatted = vehiculo.getHoraEntrada().format(formatter);
-			                String horaSalidaFormatted = horaSalida.format(formatter);
+						String horaEntradaFormatted = vehiculo.getHoraEntrada().format(formatter);
+						String horaSalidaFormatted = horaSalida.format(formatter);
 
-			                // Calcular el costo del vehículo basado en el tiempo estacionado
-			                double horasEstacionado = Duration.between(vehiculo.getHoraEntrada(), horaSalida).toMinutes() / 60.0;
-			                int costo = Vehiculo.getCosto();
+						Duration.between(vehiculo.getHoraEntrada(), horaSalida).toMinutes();
+						int costo = Vehiculo.getCosto();
 
-			                // Crear el mensaje a mostrar
-			                String mensaje = "Datos del vehículo:\n\n"
-			                        + "Matrícula: " + vehiculo.getMatricula() + "\n"
-			                        + "Marca: " + vehiculo.getMarca() + "\n"
-			                        + "Modelo: " + vehiculo.getModelo() + "\n"
-			                        + "Color: " + vehiculo.getColor() + "\n"
-			                        + "Observaciones: " + vehiculo.getObservaciones() + "\n"
-			                        + "Hora de entrada: " + horaEntradaFormatted + "\n"
-			                        + "Hora de salida: " + horaSalidaFormatted + "\n"
-			                        + "Costo: $" + costo;
+						// Crear el mensaje a mostrar
+						String mensaje = "Datos del vehículo:\n\n" + "Matrícula: " + vehiculo.getMatricula() + "\n"
+								+ "Marca: " + vehiculo.getMarca() + "\n" + "Modelo: " + vehiculo.getModelo() + "\n"
+								+ "Color: " + vehiculo.getColor() + "\n" + "Observaciones: "
+								+ vehiculo.getObservaciones() + "\n" + "Hora de entrada: " + horaEntradaFormatted + "\n"
+								+ "Hora de salida: " + horaSalidaFormatted + "\n" + "Costo: $" + costo;
 
-			                // Mostrar el mensaje en un cuadro de diálogo
-			                JOptionPane.showMessageDialog(null, mensaje, "Información del vehículo", JOptionPane.INFORMATION_MESSAGE);
-			            } else {
-			                JOptionPane.showMessageDialog(null, "No se encontró un vehículo con la matrícula proporcionada.", 
-			                        "Error", JOptionPane.ERROR_MESSAGE);
-			            }
+						// Mostrar el mensaje en un cuadro de diálogo
+						JOptionPane.showMessageDialog(null, mensaje, "Información del vehículo",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"No se encontró un vehículo con la matrícula proporcionada.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
 
-			        } catch (Exception ex) {
-			            // Manejo de excepciones en caso de errores
-			            ex.printStackTrace();
-			            JOptionPane.showMessageDialog(null, "Error al procesar la salida.");
-			        }
-			    }
-			});
+				} catch (Exception ex) {
+					// Manejo de excepciones en caso de errores
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Error al procesar la salida.");
+				}
+			}
+		});
 
 		btnSalida.setBounds(314, 62, 141, 23);
 		panel.add(btnSalida);

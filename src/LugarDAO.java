@@ -44,7 +44,7 @@ public class LugarDAO {
 
                         // Preparar la actualización para marcar el lugar como ocupado y asignar la matrícula
                         try (PreparedStatement pstmtUpdate = conn.prepareStatement(sqlUpdate)) {
-                            pstmtUpdate.setString(1, matricula); // Establece la matrícula
+                            pstmtUpdate.setString(1, matricula.toUpperCase()); // Establece la matrícula
                             pstmtUpdate.setInt(2, lugarId); // Establece el ID del lugar
                             pstmtUpdate.executeUpdate(); // Ejecuta la actualización
                         }
